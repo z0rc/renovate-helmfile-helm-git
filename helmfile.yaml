@@ -1,0 +1,20 @@
+---
+repositories:
+- name: indeedeng-alpha
+  url: git+https://github.com/indeedeng-alpha/harbor-container-webhook@deploy/charts/harbor-container-webhook?ref=main
+
+releases:
+- name: harbor-webhook
+  chart: indeedeng-alpha/harbor-container-webhook
+  version: 0.5.0
+  namespace: test
+  values:
+  - replicaCount: 2
+    rules:
+    - name: docker.io rewrite rule
+      # it's able to handle bare images like 'ubuntu:latest' too
+      matches:
+      - ^docker.io
+      replace: harbor.example.net/dockerhub-proxy
+      # if harbor is unavailable/unreachable, don't rewrite anything
+      checkUpstream: true
